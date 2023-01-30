@@ -6,7 +6,7 @@ Two things:
 
 ### 1. Generates Namespace-Scope Dashboards
 
-For each namespace in the `ALL_NAMESPACES` array, it will create a specific dashboard file for that namespace "family".
+For each namespace in the `ALL_NAMESPACES` array (in **generate-all.sh**), it will create a specific dashboard file for that namespace "family".
 
 For example, a value of `openbanking` will create a dashboard with a drop-down for `openbanking-*` that matches "dev", "sandbox", "prod", and all others. You can then use Grafana RBAC permissions to restrict certain persons to seeing only the Kong Prometheus plugin information for their specific namespace family.
 
