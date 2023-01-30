@@ -1,0 +1,31 @@
+{
+  "allValue": ".*",
+  "current": {
+    "selected": true,
+    "text": [
+      "All"
+    ],
+    "value": [
+      "$__all"
+    ]
+  },
+  "datasource": "Prometheus",
+  "definition": "default",
+  "description": null,
+  "error": null,
+  "hide": 0,
+  "includeAll": true,
+  "label": null,
+  "multi": true,
+  "name": "consumer",
+  "options": [],
+  "query": {
+    "query": "default",
+    "refId": "StandardVariableQuery"
+  },
+  "refresh": 2,
+  "regex": "",
+  "skipUrlSync": false,
+  "sort": 1,
+  "type": "query"
+}
