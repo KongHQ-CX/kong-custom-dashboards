@@ -13,6 +13,8 @@ then
   echo_usage
 fi
 
+set -e
+
 echo ""
 
 echo "Producing a dashboard for namespace(s) $1 - outputting to ./$2"
@@ -63,14 +65,14 @@ then
   mv $2.stageout $2.stagein
   jq ".templating.list[.templating.list | length - 1].definition = \"label_values(kong_http_requests_total, consumer)\"" $2.stagein > $2.stageout
   mv $2.stageout $2.stagein
-  jq ".templating.list[.templating.list | length - 1].query.query = \"label_values(kong_http_requests_total, consumer)\"" $2.stagein > $2.stageout
+  jq ".templating.list[.templating.list | length - 1].query = \"label_values(kong_http_requests_total, consumer)\"" $2.stagein > $2.stageout
   mv $2.stageout $2.stagein
 else
   jq ".templating.list[.templating.list | length] |= . + $(cat ./kong-snippets/consumer-label.json)" $2.stagein > $2.stageout
   mv $2.stageout $2.stagein
   jq ".templating.list[.templating.list | length - 1].definition = \"label_values(kong_http_requests_total{namespace=~\\\"$1.*\\\"}, consumer)\"" $2.stagein > $2.stageout
   mv $2.stageout $2.stagein
-  jq ".templating.list[.templating.list | length - 1].query.query = \"label_values(kong_http_requests_total{namespace=~\\\"$1.*\\\"}, consumer)\"" $2.stagein > $2.stageout
+  jq ".templating.list[.templating.list | length - 1].query = \"label_values(kong_http_requests_total{namespace=~\\\"$1.*\\\"}, consumer)\"" $2.stagein > $2.stageout
   mv $2.stageout $2.stagein
 fi
 
@@ -78,31 +80,31 @@ echo "> Updating existing labels"
 echo ">> Adding '\$namespace' to 'instance' label predicate"
 jq '(.templating.list[] | select(.name == "instance").definition) |= "label_values(kong_nginx_connections_total{namespace=\"$namespace\"},instance)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
-jq '(.templating.list[] | select(.name == "instance").query.query) |= "label_values(kong_nginx_connections_total{namespace=\"$namespace\"},instance)"' $2.stagein > $2.stageout
+jq '(.templating.list[] | select(.name == "instance").query) |= "label_values(kong_nginx_connections_total{namespace=\"$namespace\"},instance)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
 
 echo ">> Adding '\$namespace' to 'service' label predicate"
 jq '(.templating.list[] | select(.name == "service").definition) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},service)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
-jq '(.templating.list[] | select(.name == "service").query.query) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},service)"' $2.stagein > $2.stageout
+jq '(.templating.list[] | select(.name == "service").query) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},service)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
 
 echo ">> Adding '\$namespace' to 'route' label predicate"
 jq '(.templating.list[] | select(.name == "route").definition) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},route)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
-jq '(.templating.list[] | select(.name == "route").query.query) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},route)"' $2.stagein > $2.stageout
+jq '(.templating.list[] | select(.name == "route").query) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},route)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
 
 echo ">> Adding '\$namespace' to 'route' label predicate"
 jq '(.templating.list[] | select(.name == "route").definition) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},route)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
-jq '(.templating.list[] | select(.name == "route").query.query) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},route)"' $2.stagein > $2.stageout
+jq '(.templating.list[] | select(.name == "route").query) |= "label_values(kong_http_requests_total{namespace=\"$namespace\"},route)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
 
 echo ">> Adding '\$namespace' to 'upstream' label predicate"
 jq '(.templating.list[] | select(.name == "upstream").definition) |= "label_values(kong_upstream_target_health{namespace=\"$namespace\"},upstream)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
-jq '(.templating.list[] | select(.name == "upstream").query.query) |= "label_values(kong_upstream_target_health{namespace=\"$namespace\"},upstream)"' $2.stagein > $2.stageout
+jq '(.templating.list[] | select(.name == "upstream").query) |= "label_values(kong_upstream_target_health{namespace=\"$namespace\"},upstream)"' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
 
 echo ">> Adding '\$namespace' to graph filters"
