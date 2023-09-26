@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ALL_NAMESPACES=(kong-team1 kong-team2 all)
+ALL_NAMESPACES=(kong-dev kong-stage kong-prod all)
 
 for n in ${ALL_NAMESPACES[@]}; do
     echo ""

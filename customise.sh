@@ -20,7 +20,7 @@ cp kong-3.0-dashboard-template.json.tpl $2.stagein
 echo ""
 
 echo "> Adding title 'Kong Filtered $1'"
-jq ".title = \"Kong Filtered $1\"" $2.stagein > $2.stageout
+jq ".title = \"Kong Filtered Namespace: $1\"" $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
 
 NEW_UID="$(openssl rand -hex 4)f"
@@ -31,12 +31,12 @@ mv $2.stageout $2.stagein
 echo "> Removing import placeholders"
 jq 'del(.__elements)' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
-jq 'del(.__inputs)' $2.stagein > $2.stageout
-mv $2.stageout $2.stagein
+# jq 'del(.__inputs)' $2.stagein > $2.stageout
+# mv $2.stageout $2.stagein
 jq 'del(.__requires)' $2.stagein > $2.stageout
 mv $2.stageout $2.stagein
-jq '.annotations.list[0].datasource = "Prometheus"' $2.stagein > $2.stageout
-mv $2.stageout $2.stagein
+# jq '.annotations.list[0].datasource = "Prometheus"' $2.stagein > $2.stageout
+# mv $2.stageout $2.stagein
 
 
 echo "> Adding 'namespace' label"
