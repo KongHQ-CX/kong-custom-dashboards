@@ -56,12 +56,23 @@ else
 fi
 
 echo "> Adding 'consumer' label"
-jq ".templating.list[.templating.list | length] |= . + $(cat ./kong-snippets/consumer-label.json)" $2.stagein > $2.stageout
-mv $2.stageout $2.stagein
-jq ".templating.list[.templating.list | length - 1].definition = \"label_values(kong_http_requests_total{namespace=~\\\"$1.*\\\"}, consumer)\"" $2.stagein > $2.stageout
-mv $2.stageout $2.stagein
-jq ".templating.list[.templating.list | length - 1].query.query = \"label_values(kong_http_requests_total{namespace=~\\\"$1.*\\\"}, consumer)\"" $2.stagein > $2.stageout
-mv $2.stageout $2.stagein
+if [ "$1" == "all" ]
+then
+  echo '!! "ALL" namespaces requested - setting consumer filter to null !!'
+  jq ".templating.list[.templating.list | length] |= . + $(cat ./kong-snippets/consumer-label.json)" $2.stagein > $2.stageout
+  mv $2.stageout $2.stagein
+  jq ".templating.list[.templating.list | length - 1].definition = \"label_values(kong_http_requests_total, consumer)\"" $2.stagein > $2.stageout
+  mv $2.stageout $2.stagein
+  jq ".templating.list[.templating.list | length - 1].query.query = \"label_values(kong_http_requests_total, consumer)\"" $2.stagein > $2.stageout
+  mv $2.stageout $2.stagein
+else
+  jq ".templating.list[.templating.list | length] |= . + $(cat ./kong-snippets/consumer-label.json)" $2.stagein > $2.stageout
+  mv $2.stageout $2.stagein
+  jq ".templating.list[.templating.list | length - 1].definition = \"label_values(kong_http_requests_total{namespace=~\\\"$1.*\\\"}, consumer)\"" $2.stagein > $2.stageout
+  mv $2.stageout $2.stagein
+  jq ".templating.list[.templating.list | length - 1].query.query = \"label_values(kong_http_requests_total{namespace=~\\\"$1.*\\\"}, consumer)\"" $2.stagein > $2.stageout
+  mv $2.stageout $2.stagein
+fi
 
 echo "> Updating existing labels"
 echo ">> Adding '\$namespace' to 'instance' label predicate"
